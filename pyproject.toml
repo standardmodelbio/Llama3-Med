@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tinyllava"
+name = "llama3_med"
 version = "1.0.0"
-description = "A Framework of Small-scale Large Multimodal Models."
+description = "Repo for Llama3-Med: Advancing Multi-Modal Analaysis in Biomedicine"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -27,8 +27,8 @@ dependencies = [
 train = ["deepspeed==0.14.0", "ninja", "wandb"]
 
 [project.urls]
-"Homepage" = "https://github.com/DLCV-BUAA/TinyLLaVABench"
-"Bug Tracker" = "https://github.com/DLCV-BUAA/TinyLLaVABench/issues"
+"Homepage" = "https://github.com/standardmodelbio/Llama3-Med"
+"Bug Tracker" = "https://github.com/standardmodelbio/Llama3-Med/issues"
 
 [tool.setuptools.packages.find]
 exclude = ["assets*", "benchmark*", "docs", "dist*", "playground*", "scripts*", "tests*"]
