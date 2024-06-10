@@ -3,10 +3,16 @@ import transformers
 from packaging import version
 
 from llama3med.data.dataset import make_supervised_data_module
-from llama3med.model import *
-from llama3med.train.tinyllava_trainer import LLaVATrainer
+from llama3med.model import Llama3MedConfig, Llama3MedForConditionalGeneration
+from llama3med.train.trainer import LLaVATrainer
 from llama3med.training_recipe import TrainingRecipeFactory
-from llama3med.utils import *
+from llama3med.utils import (
+    DataArguments,
+    ModelArguments,
+    TrainingArguments,
+    log_trainable_params,
+    logger_setting,
+)
 
 IS_TOKENIZER_GREATER_THAN_0_14 = version.parse(tokenizers.__version__) >= version.parse(
     "0.14"
@@ -69,9 +75,9 @@ def train():
     # model_args contain arguements for huggingface model .from_pretrained function
     model_args = load_settings(model_arguments, data_arguments, training_arguments)
     model_args = training_recipe.add_args(model_args)
-    model_config = TinyLlavaConfig()
+    model_config = Llama3MedConfig()
     model_config.load_from_config(model_arguments)
-    model = TinyLlavaForConditionalGeneration(model_config)
+    model = Llama3MedForConditionalGeneration(model_config)
     # load pretrained checkpoint
     if training_arguments.pretrained_model_path is not None:
         model = training_recipe.load(model, model_args)

@@ -25,4 +25,4 @@ def register_training_recipe(name):
 
 
 models_dir = os.path.dirname(__file__)
-import_modules(models_dir, "tinyllava.training_recipe")
+import_modules(models_dir, "llama3med.training_recipe")

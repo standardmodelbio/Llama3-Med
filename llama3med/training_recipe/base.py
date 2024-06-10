@@ -1,9 +1,10 @@
 import os
 
 import torch
+from transformers import PreTrainedModel
 
-from ..model import *
-from ..utils import *
+# from ..model import *
+from ..utils import get_state_maybe_zero_3, log
 
 
 class BaseTrainingRecipe:

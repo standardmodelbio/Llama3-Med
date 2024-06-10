@@ -13,7 +13,7 @@ from transformers.trainer import (
     logger,
 )
 
-from ..utils.train_utils import *
+# from ..utils.train_utils import *
 
 
 def split_to_even_chunks(indices, lengths, num_chunks):
@@ -156,7 +156,8 @@ class LLaVATrainer(Trainer):
         if self.args.group_by_modality_length:
             lengths = self.train_dataset.modality_lengths
             return LengthGroupedSampler(
-                # self.args.train_batch_size * self.args.gradient_accumulation_steps, # TODO: seems that we should not have gradient_accumulation_steps
+                # self.args.train_batch_size * self.args.gradient_accumulation_steps, 
+                # TODO: seems that we should not have gradient_accumulation_steps
                 self.args.train_batch_size,
                 world_size=self.args.world_size,
                 lengths=lengths,

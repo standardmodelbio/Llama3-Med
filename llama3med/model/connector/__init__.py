@@ -26,4 +26,4 @@ def register_connector(name):
 
 # automatically import any Python files in the models/ directory
 models_dir = os.path.dirname(__file__)
-import_modules(models_dir, "llama3_med.model.connector")
+import_modules(models_dir, "llama3med.model.connector")
