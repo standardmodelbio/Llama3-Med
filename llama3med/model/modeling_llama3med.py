@@ -7,7 +7,7 @@ from transformers import PreTrainedModel
 from transformers.generation.utils import GenerateOutput
 from transformers.modeling_outputs import CausalLMOutputWithPast
 
-from ..utils.constants import *
+from ..utils.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX
 from . import ConnectorFactory, LLMFactory, VisionTowerFactory
 from .configuration_llama3med import Llama3MedConfig
 

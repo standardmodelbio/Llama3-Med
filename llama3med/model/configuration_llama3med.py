@@ -1,6 +1,6 @@
 from transformers import CONFIG_MAPPING, AutoConfig, PretrainedConfig
 
-from ..utils.constants import *
+from ..utils.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX
 
 
 class Llama3MedConfig(PretrainedConfig):

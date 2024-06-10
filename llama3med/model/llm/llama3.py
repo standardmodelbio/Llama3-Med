@@ -7,7 +7,7 @@ from . import register_llm
 def return_llama3class():
     def tokenizer_and_post_load(tokenizer):
         if tokenizer.unk_token is None:
-            tokenizer.pad_token = "<|eot_id|>"
+            tokenizer.pad_token = tokenizer.eos_token
         else:
             tokenizer.pad_token = tokenizer.unk_token
         return tokenizer
