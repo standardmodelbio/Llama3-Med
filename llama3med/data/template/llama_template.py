@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import tokenizers
 from packaging import version
 
-from ...utils.constants import *
+from ...utils.constants import IGNORE_INDEX
 from . import register_template
 from .base import Template
 from .formatter import EmptyFormatter, Formatter, StringFormatter

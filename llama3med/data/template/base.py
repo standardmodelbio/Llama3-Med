@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import torch
 
-from ...utils.constants import *
+from ...utils.constants import DEFAULT_IMAGE_TOKEN, IGNORE_INDEX, IMAGE_TOKEN_INDEX
 from .formatter import Formatter
 
 

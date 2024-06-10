@@ -3,7 +3,11 @@ import ast
 import torch
 from PIL import Image, ImageFile
 
-from ..utils.data_utils import *
+from ..utils.data_utils import (
+    divide_to_patches,
+    resize_and_pad_image,
+    select_best_resolution,
+)
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -56,7 +60,7 @@ class ImagePreprocess:
         Returns:
             torch.Tensor: A tensor containing the processed image patches.
         """
-        if type(grid_pinpoints) is list:
+        if isinstance(grid_pinpoints, list):
             possible_resolutions = grid_pinpoints
         else:
             possible_resolutions = ast.literal_eval(grid_pinpoints)

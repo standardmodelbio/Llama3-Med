@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ...utils.constants import *
+from ...utils.constants import IGNORE_INDEX
 from . import register_template
 from .base import Template
 from .formatter import EmptyFormatter, Formatter, StringFormatter

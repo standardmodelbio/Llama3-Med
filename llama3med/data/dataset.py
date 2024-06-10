@@ -10,7 +10,7 @@ from PIL import Image, ImageFile
 from torch.utils.data import Dataset
 
 from ..utils.arguments import DataArguments
-from ..utils.constants import *
+from ..utils.constants import IGNORE_INDEX
 from .image_preprocess import ImagePreprocess
 from .text_preprocess import TextPreprocess
 

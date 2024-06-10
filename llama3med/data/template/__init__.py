@@ -2,7 +2,7 @@ import os
 from typing import Dict
 
 from ...utils import import_modules
-from .base import *
+from .base import Template
 
 TEMPlATE_FACTORY: Dict[str, Template] = {}
 
