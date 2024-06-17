@@ -42,9 +42,9 @@ def get_modality_length_grouped_indices(
     lengths, batch_size, world_size, generator=None
 ):
     # We need to use torch for the random part as a distributed sampler will set the random seed for torch.
-    assert all(l != 0 for l in lengths), "Should not have zero length."
-    mm_indices, mm_lengths = zip(*[(i, l) for i, l in enumerate(lengths) if l > 0])
-    lang_indices, lang_lengths = zip(*[(i, -l) for i, l in enumerate(lengths) if l < 0])
+    assert all(length != 0 for length in lengths), "Should not have zero length."
+    mm_indices, mm_lengths = zip(*[(i, length) for i, length in enumerate(lengths) if length > 0])
+    lang_indices, lang_lengths = zip(*[(i, -length) for i, length in enumerate(lengths) if length < 0])
 
     assert len(mm_indices) > 0, "Should have at least one multimodal sample."
     assert len(lang_indices) > 0, "Should have at least one language sample."

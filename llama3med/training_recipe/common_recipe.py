@@ -1,6 +1,6 @@
-# from . import register_training_recipe
-# from .base import BaseTrainingRecipe
+from . import register_training_recipe
+from .base import BaseTrainingRecipe
 
 
-# @register_training_recipe("common")
-# class CommonTrainingRecipe(BaseTrainingRecipe): ...
+@register_training_recipe("common")
+class CommonTrainingRecipe(BaseTrainingRecipe): ...

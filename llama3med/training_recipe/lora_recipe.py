@@ -3,8 +3,12 @@ import os
 import torch
 from peft import LoraConfig, get_peft_model
 
-from ..utils import log
-from ..utils.train_utils import *
+from ..utils import (
+    find_all_linear_names,
+    get_peft_state_maybe_zero_3,
+    get_peft_state_non_lora_maybe_zero_3,
+    log,
+)
 from . import register_training_recipe
 from .base import BaseTrainingRecipe
 
