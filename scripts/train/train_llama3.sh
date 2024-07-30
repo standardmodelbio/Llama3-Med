@@ -4,10 +4,10 @@ IMAGE_PATH=/home/user/cache/vqa_path/images #pretrain image dir
 # FINETUNE_IMAGE_PATH=/home/ai/data/llava/dataset #finetune image dir
 
 LLM_VERSION=meta-llama/Meta-Llama-3.1-8B-Instruct # llm path in huggingface
-VT_VERSION=google/siglip-so400m-patch14-384 #vision tower path in huggingface
+VT_VERSION=h-optimus-0 #vision tower path in huggingface
 VT_VERSION2="" #if you are not using mof vision tower, keep it empty
 CN_VERSION=mlp2x_gelu #connector type, other options are: qformer, resampler, etc
-CONV_VERSION=llama #chat template, other options are: phi, llama, gemmma, etc
+CONV_VERSION=llama3 #chat template, other options are: phi, llama, gemmma, etc
 VERSION=base #experiment name for recording different runnings
 TRAIN_RECIPE=common #training recipes, other options are: lora, qlora
 MODEL_MAX_LENGTH=2048 #max model length for llm

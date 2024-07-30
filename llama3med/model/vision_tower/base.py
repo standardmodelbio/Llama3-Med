@@ -65,7 +65,6 @@ class VisionTower(nn.Module):
             raise ValueError(
                 f"Unexpected select feature: {kwargs.get('vision_feature_select_strategy')}"
             )
-
         return image_features
 
     @property

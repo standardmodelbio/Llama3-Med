@@ -21,7 +21,7 @@ LLM_VARIANT="${LLM_VERSION#*/}"
 
 deepspeed llama3med/train/train.py \
     --deepspeed ./scripts/zero3.json \
-    --data_path  $DATA_PATH\
+    --data_path  $DATA_PATH \
     --image_folder $IMAGE_PATH \
     --is_multimodal True \
     --conv_version pretrain \
@@ -42,7 +42,7 @@ deepspeed llama3med/train/train.py \
     --num_train_epochs 1 \
     --per_device_train_batch_size 32 \
     --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 2 \
+    --gradient_accumulation_steps 1 \
     --eval_strategy "no" \
     --save_strategy "steps" \
     --save_steps 24000 \

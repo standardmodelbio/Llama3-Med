@@ -42,13 +42,16 @@ class OptimusVisionTower(VisionTower):
         super().__init__(cfg)
         self._vision_tower = timm.models.VisionTransformer(**self.params)
         self._image_processor = AutoImageProcessor.from_pretrained(
-            cfg.model_name_or_path
+            "openai/clip-vit-large-patch14"
         )
+        self._image_processor.image_mean = [0.707223, 0.578729, 0.703617]
+        self._image_processor.image_std = [0.211883, 0.230117, 0.177517]
 
     def _load_model(self, vision_tower_name, **kwargs):
         pretrained_vision_tower_path = get_value_from_kwargs(
             kwargs, "pretrained_vision_tower_path"
         )
+        pretrained_vision_tower_path = os.path.join("/home/user/cache", vision_tower_name)
         if pretrained_vision_tower_path is not None:
             vision_tower_weights = torch.load(
                 os.path.join(pretrained_vision_tower_path, "checkpoint.pth"),
@@ -61,6 +64,8 @@ class OptimusVisionTower(VisionTower):
         print("Loading vision tower from ", vision_tower_name)
 
     def forward(self, x, **kwargs):
-        image_features = self._vision_tower(x)
-
+        device = x.data.device
+        self.to(device)
+        image_features = self._vision_tower.forward_features(x)
+        print(image_features.shape)
         return image_features
