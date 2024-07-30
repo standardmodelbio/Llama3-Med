@@ -67,5 +67,13 @@ class OptimusVisionTower(VisionTower):
         device = x.data.device
         self.to(device)
         image_features = self._vision_tower.forward_features(x)
-        print(image_features.shape)
+
+        if kwargs.get("vision_feature_select_strategy", "patch") == "patch":
+            image_features = image_features[:, 1:]
+        elif kwargs.get("vision_feature_select_strategy", "patch") == "cls_patch":
+            image_features = image_features
+        else:
+            raise ValueError(
+                f"Unexpected select feature: {kwargs.get('vision_feature_select_strategy')}"
+            )
         return image_features
