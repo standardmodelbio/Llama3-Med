@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def load_base_ckp_for_lora(ckp_path):
     logger.info("loading ckpt...")
-    ckp = torch.load(ckp_path, map_location=torch.device("cuda"), weights_only=True)
+    ckp = torch.load(ckp_path, map_location=torch.device("cpu"), weights_only=True)
     new_ckp = OrderedDict()
     logger.info("mapping...")
     for k, v in ckp.items():
