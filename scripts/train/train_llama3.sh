@@ -1,5 +1,5 @@
-DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_Alignment_VQA.json #pretrain annotation file path
-FINETUNE_DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_Alignment_VQA.json #finetune annotation file path
+DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json #pretrain annotation file path
+FINETUNE_DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json #finetune annotation file path
 IMAGE_PATH=/home/user/cache/pubmedvision/ #pretrain image dir
 FINETUNE_IMAGE_PATH=/home/user/cache/pubmedvision/ #finetune image dir
 
@@ -13,5 +13,5 @@ TRAIN_RECIPE=common #training recipes, other options are: lora, qlora
 MODEL_MAX_LENGTH=2048 #max model length for llm
 
 
-bash scripts/train/pretrain.sh "$DATA_PATH" "$IMAGE_PATH" "$LLM_VERSION" "$VT_VERSION" "$VT_VERSION2" "$CN_VERSION" "$VERSION" "$TRAIN_RECIPE" "$MODEL_MAX_LENGTH"
-# bash scripts/train/finetune.sh "$FINETUNE_DATA_PATH" "$FINETUNE_IMAGE_PATH" "$LLM_VERSION" "$VT_VERSION" "$VT_VERSION2" "$CN_VERSION" "$CONV_VERSION" "$VERSION" "$TRAIN_RECIPE" "$MODEL_MAX_LENGTH"
+# bash scripts/train/pretrain.sh "$DATA_PATH" "$IMAGE_PATH" "$LLM_VERSION" "$VT_VERSION" "$VT_VERSION2" "$CN_VERSION" "$VERSION" "$TRAIN_RECIPE" "$MODEL_MAX_LENGTH"
+bash scripts/train/finetune.sh "$FINETUNE_DATA_PATH" "$FINETUNE_IMAGE_PATH" "$LLM_VERSION" "$VT_VERSION" "$VT_VERSION2" "$CN_VERSION" "$CONV_VERSION" "$VERSION" "$TRAIN_RECIPE" "$MODEL_MAX_LENGTH"

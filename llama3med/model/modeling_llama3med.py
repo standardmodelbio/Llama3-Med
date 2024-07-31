@@ -444,11 +444,12 @@ class Llama3MedForConditionalGeneration(Llama3MedPreTrainedModel):
         pretrained_llm_path = get_value_from_kwargs(kwargs, "pretrained_llm_path")
         if pretrained_llm_path is not None:
             language_model_name = pretrained_llm_path
+        
+        print("loading language model from ", language_model_name)
         if language_model_name is not None:
             self.language_model = self.language_model.from_pretrained(
                 language_model_name, **kwargs
             )
-        print("loading language model from ", language_model_name)
         self.language_model.requires_grad_(False)
 
         self.config.text_config.torch_dtype = kwargs.get("torch_dtype", None)
