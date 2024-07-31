@@ -9,10 +9,18 @@ from transformers import (
 from .configuration_llama3med import Llama3MedConfig
 from .modeling_llama3med import Llama3MedForConditionalGeneration
 
+import logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+
 
 def load_base_ckp_for_lora(ckp_path):
-    ckp = torch.load(ckp_path, map_location=torch.device("cpu"))
+    logger.info("loading ckpt...")
+    ckp = torch.load(ckp_path, map_location=torch.device("cuda"), weights_only=True)
     new_ckp = OrderedDict()
+    logger.info("mapping...")
     for k, v in ckp.items():
         new_k = k.replace(".base_layer", "")
         new_ckp[new_k] = v
@@ -51,23 +59,42 @@ def load_pretrained_model(
 
     elif model_name_or_path is not None and "lora" in model_name_or_path:
         if os.path.exists(os.path.join(model_name_or_path, "adapter_config.json")):
+            logger.info("intialize Llama3MedConfig...")
             model_config = Llama3MedConfig.from_pretrained(model_name_or_path)
+            logger.info(model_config)
+            logger.debug("initialize Llama3Med Model...")
             model = Llama3MedForConditionalGeneration(model_config)
+
+            # language model
             language_model_ckp_path = os.path.join(
                 model_name_or_path, "language_model/pytorch_model.bin"
             )
+            logger.info("loading base ckpt for lora...")
             language_model_ckp = load_base_ckp_for_lora(language_model_ckp_path)
+            logger.info("loading language model...")
             model.language_model.load_state_dict(language_model_ckp)
+            del language_model_ckp
+
+            # vision tower
             vision_tower_ckp_path = os.path.join(
                 model_name_or_path, "vision_tower/pytorch_model.bin"
             )
             vision_tower_ckp = load_base_ckp_for_lora(vision_tower_ckp_path)
+            logger.info("loading vison tower...")
             model.vision_tower._vision_tower.load_state_dict(vision_tower_ckp)
+            del vision_tower_ckp
+
+            # connector
             connector_ckp_path = os.path.join(
                 model_name_or_path, "connector/pytorch_model.bin"
             )
             connector_ckp = load_base_ckp_for_lora(connector_ckp_path)
+            logger.info("loading connector...")
             model.connector.load_state_dict(connector_ckp)
+            del connector_ckp
+
+            # convert to fp16
+            logger.info("model to bf16...")
             model.to(torch.bfloat16)
             from peft import PeftModel
 
@@ -78,7 +105,7 @@ def load_pretrained_model(
             print("Model is loaded...")
 
     image_processor = model.vision_tower._image_processor
-    context_len = getattr(model.config, "max_sequence_length", 2048)
+    context_len = getattr(model.config, "max_sequence_length", 3072)
     # tokenizer = AutoTokenizer.from_pretrained(model.config.llm_model_name_or_path, use_fast=False, padding_side="right")
     tokenizer = model.tokenizer
     # tokenizer.pad_token = tokenizer.eos_token

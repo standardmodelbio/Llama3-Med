@@ -44,7 +44,7 @@ class CustomDataset(Dataset):
         image = Image.open(os.path.join(args.image_folder, image_file)).convert('RGB')
         image_tensor = self.image_processor(image)
         
-        qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
+        # qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
         msg = Message()
         msg.add_message(qs)
         #print(prompt)
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--top_p", type=float, default=None)
     parser.add_argument("--num_beams", type=int, default=1)
-    parser.add_argument("--max_new_tokens", type=int, default=128)
+    parser.add_argument("--max_new_tokens", type=int, default=1024)
     parser.add_argument("--image_aspect_ratio", type=str, default="pad")
     args = parser.parse_args()
 

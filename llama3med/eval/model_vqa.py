@@ -48,7 +48,7 @@ def eval_model(args):
         qs = line["text"]
         cur_prompt = qs
 
-        qs = DEFAULT_IMAGE_TOKEN + "\n" + qs
+        # qs = DEFAULT_IMAGE_TOKEN + "\n" + qs
 
         msg = Message()
         msg.add_message(qs)
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument("--image-folder", type=str, default="")
     parser.add_argument("--question-file", type=str, default="tables/question.jsonl")
     parser.add_argument("--answers-file", type=str, default="answer.jsonl")
-    parser.add_argument("--conv-mode", type=str, default="llava_v1")
+    parser.add_argument("--conv-mode", type=str, default="llama3")
     parser.add_argument("--num-chunks", type=int, default=1)
     parser.add_argument("--chunk-idx", type=int, default=0)
     parser.add_argument("--temperature", type=float, default=0.2)

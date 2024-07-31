@@ -11,6 +11,12 @@ from ..utils.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX
 from . import ConnectorFactory, LLMFactory, VisionTowerFactory
 from .configuration_llama3med import Llama3MedConfig
 
+import logging
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 
 def get_value_from_kwargs(kwargs, name):
     if name in kwargs:
@@ -54,15 +60,17 @@ class Llama3MedPreTrainedModel(PreTrainedModel):
 class Llama3MedForConditionalGeneration(Llama3MedPreTrainedModel):
     def __init__(self, config: Llama3MedConfig):
         super().__init__(config)
-
+        logger.info("initialize langauge model...")
         self.language_model = LLMFactory(config.llm_model_name_or_path)[0](
             config.text_config
         )
+        logger.info("initialize vision tower...")
         self.vision_tower = VisionTowerFactory(config.vision_model_name_or_path)(
             config.vision_config
         )
+        logger.info("initialize connector...")
         self.connector = ConnectorFactory(config.connector_type)(config)
-
+        logger.info("initialize tokenizer...")
         (Tokenizer, post_load) = LLMFactory(config.llm_model_name_or_path)[1]
         self.tokenizer = post_load(
             Tokenizer.from_pretrained(
