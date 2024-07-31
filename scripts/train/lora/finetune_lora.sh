@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ $# -ne 10 ]; then
-    echo "Usage: $0 <DATA_PATH> <IMAGE_PATH> <LLM_VERSION> <VT_VERSION> <VT_VERSION2> <CN_VERSION> <CONV_VERSION> <VERSION> <TRAIN_RECIPE> <MODEL_MAX_LENGTH>"
+if [ $# -ne 11 ]; then
+    echo "Usage: $0 <DATA_PATH> <IMAGE_PATH> <LLM_VERSION> <VT_VERSION> <VT_VERSION2> <CN_VERSION> <CONV_VERSION> <PRETRAIN_VERSION> <FINETUNE_VERSION> <TRAIN_RECIPE> <MODEL_MAX_LENGTH>"
     exit 1
 fi
 
@@ -12,14 +12,15 @@ VT_VERSION="$4"
 VT_VERSION2="$5"
 CN_VERSION="$6"
 CONV_VERSION="$7"
-VERSION="$8"
-TRAIN_RECIPE="$9"
-MODEL_MAX_LENGTH="${10}"
+PRETRAIN_VERSION="$8"
+FINETUNE_VERSION="$9"
+TRAIN_RECIPE="${10}"
+MODEL_MAX_LENGTH="${11}"
 
 VT_VARIANT="${VT_VERSION#*/}"
 LLM_VARIANT="${LLM_VERSION#*/}"
 
-deepspeed --include localhost:2,3,4,5 --master_port 29502 tinyllava/train/train.py \
+deepspeed llama3med/train/train.py \
     --deepspeed ./scripts/zero2.json \
     --data_path  $DATA_PATH \
     --image_folder $IMAGE_PATH \
@@ -32,7 +33,7 @@ deepspeed --include localhost:2,3,4,5 --master_port 29502 tinyllava/train/train.
     --mm_vision_select_layer -2 \
     --image_aspect_ratio square \
     --attn_implementation flash_attention_2 \
-    --fp16 True \
+    --bf16 True \
     --training_recipe $TRAIN_RECIPE \
     --tune_type_llm lora \
     --tune_type_vision_tower frozen \
@@ -41,8 +42,8 @@ deepspeed --include localhost:2,3,4,5 --master_port 29502 tinyllava/train/train.
     --lora_r 128 \
     --lora_alpha 256 \
     --group_by_modality_length False \
-    --pretrained_model_path /mnt/data/sata/yinghu/checkpoints/llava_factory/tiny-llava-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain \
-    --output_dir /mnt/data/sata/yinghu/checkpoints/llava_factory/tiny-llava-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-finetune \
+    --pretrained_model_path /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${PRETRAIN_VERSION}-pretrain \
+    --output_dir /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${FINETUNE_VERSION}-finetune \
     --num_train_epochs 1 \
     --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 4 \
@@ -61,6 +62,6 @@ deepspeed --include localhost:2,3,4,5 --master_port 29502 tinyllava/train/train.
     --gradient_checkpointing True \
     --dataloader_num_workers 8 \
     --lazy_preprocess True \
-    --report_to tensorboard \
+    --report_to wandb \
     --tokenizer_use_fast False \
-    --run_name tiny-llava-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-finetune
+    --run_name llama3med-${LLM_VARIANT}-${VT_VARIANT}-${FINETUNE_VERSION}-finetune
