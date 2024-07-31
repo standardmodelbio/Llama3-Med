@@ -3,12 +3,12 @@ import collections
 import json
 import warnings
 
-from eval_metrics.evaluate_metrics import (
+from .eval_metrics.evaluate_metrics import (
     calculate_appearance_with_normalization,
     calculate_exactmatch,
     calculate_f1score,
 )
-from eval_metrics.glossary import *
+from .eval_metrics.glossary import *
 from nltk.translate.bleu_score import sentence_bleu
 from tabulate import tabulate
 
