@@ -1,7 +1,7 @@
-DATA_PATH=/home/user/cache/vqa_path/train_llava.json #pretrain annotation file path
-# FINETUNE_DATA_PATH=/home/ai/data/llava/dataset/text_files/llava_v1_5_mix665k.json #finetune annotation file path
-IMAGE_PATH=/home/user/cache/vqa_path/images #pretrain image dir
-# FINETUNE_IMAGE_PATH=/home/ai/data/llava/dataset #finetune image dir
+DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_Alignment_VQA.json #pretrain annotation file path
+FINETUNE_DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_Alignment_VQA.json #finetune annotation file path
+IMAGE_PATH=/home/user/cache/pubmedvision/ #pretrain image dir
+FINETUNE_IMAGE_PATH=/home/user/cache/pubmedvision/ #finetune image dir
 
 LLM_VERSION=meta-llama/Meta-Llama-3.1-8B-Instruct # llm path in huggingface
 VT_VERSION=h-optimus-0 #vision tower path in huggingface

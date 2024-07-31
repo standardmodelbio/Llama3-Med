@@ -51,7 +51,7 @@ class OptimusVisionTower(VisionTower):
         pretrained_vision_tower_path = get_value_from_kwargs(
             kwargs, "pretrained_vision_tower_path"
         )
-        pretrained_vision_tower_path = os.path.join("/home/user/cache", vision_tower_name)
+        pretrained_vision_tower_path = os.path.join("/home/user/cache/checkpoints", vision_tower_name)
         if pretrained_vision_tower_path is not None:
             vision_tower_weights = torch.load(
                 os.path.join(pretrained_vision_tower_path, "checkpoint.pth"),

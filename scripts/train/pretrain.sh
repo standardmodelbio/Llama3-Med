@@ -32,17 +32,17 @@ deepspeed llama3med/train/train.py \
     --mm_vision_select_layer -2 \
     --image_aspect_ratio square \
     --attn_implementation flash_attention_2 \
-    --fp16 True \
+    --bf16 True \
     --training_recipe $TRAIN_RECIPE \
     --tune_type_llm frozen \
     --tune_type_vision_tower frozen \
     --tune_vision_tower_from_layer 0 \
     --tune_type_connector full \
-    --output_dir /home/user/cache/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain \
+    --output_dir /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain \
     --num_train_epochs 1 \
     --per_device_train_batch_size 32 \
     --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 1 \
+    --gradient_accumulation_steps 2 \
     --eval_strategy "no" \
     --save_strategy "steps" \
     --save_steps 24000 \
@@ -57,6 +57,6 @@ deepspeed llama3med/train/train.py \
     --gradient_checkpointing True \
     --dataloader_num_workers 8 \
     --lazy_preprocess True \
-    --report_to none \
+    --report_to wandb \
     --tokenizer_use_fast False \
     --run_name llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain
