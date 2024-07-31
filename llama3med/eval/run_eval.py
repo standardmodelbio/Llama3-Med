@@ -4,11 +4,11 @@ import json
 import warnings
 
 from eval_metrics.evaluate_metrics import (
-    # calculate_appearance_with_normalization,
+    calculate_appearance_with_normalization,
     calculate_exactmatch,
     calculate_f1score,
 )
-from eval_metrics.glossary import normalize_word
+from eval_metrics.glossary import *
 from nltk.translate.bleu_score import sentence_bleu
 from tabulate import tabulate
 
@@ -17,7 +17,7 @@ warnings.simplefilter("ignore")
 
 def parse_option():
     parser = argparse.ArgumentParser(
-        "Evaluation for LLaVA Generated Outputs", add_help=False
+        "Evaluation for Llama3-Med Generated Outputs", add_help=False
     )
     parser.add_argument(
         "--gt",
@@ -49,7 +49,7 @@ def load_jsonl(path):
     return data
 
 
-def evaluate(gt, pred, candidate=None, criterion=None):
+def evaluate(gt, pred, candidate, criterion=None):
     closed_scores = collections.defaultdict(list)
     bleu_scores = collections.defaultdict(list)
     exact_scores = collections.defaultdict(list)
@@ -57,14 +57,11 @@ def evaluate(gt, pred, candidate=None, criterion=None):
     open_hit_scores = collections.defaultdict(list)
 
     for gt_item, pred_item in zip(gt, pred):
-        # try:
-        #     gt_results = gt_item["conversations"]
-        # except:
-        #     gt_results = gt_item["conversatons"]
-        # gt_value = gt_results[1]["value"].lower()
-        if "q_lang" in gt_item and gt_item["q_lang"] != "en":
-            continue
-        gt_value = gt_item["answer"].lower()
+        try:
+            gt_results = gt_item["conversations"]
+        except:
+            gt_results = gt_item["conversatons"]
+        gt_value = gt_results[1]["value"].lower()
         pred_value = pred_item["text"].lower()
 
         gt_value = normalize_word(gt_value)
@@ -72,15 +69,15 @@ def evaluate(gt, pred, candidate=None, criterion=None):
 
         if gt_item["answer_type"] == "OPEN":
             # for open-ended question
-            if gt_value in pred_value:
-                hit = 1.0
-            else:
-                hit = 0.0
-            open_hit_scores["hit"].append(hit)
+            # if gt_value in pred_value:
+            #     hit = 1.0
+            # else:
+            #     hit = 0.0
+            # open_hit_scores['hit'].append(hit)
 
-            # open_hit_scores["hit"].append(
-            #     calculate_appearance_with_normalization(pred_value, gt_value, candidate)
-            # )
+            open_hit_scores["hit"].append(
+                calculate_appearance_with_normalization(pred_value, gt_value, candidate)
+            )
             open_hit_scores["q_id"].append(pred_item["question_id"])
 
             exact_scores["hit"].append(calculate_exactmatch(pred_value, gt_value))
@@ -121,7 +118,7 @@ def evaluate(gt, pred, candidate=None, criterion=None):
             bleu_scores["bleu_score_2"].append(b_score_2)
             bleu_scores["bleu_score_3"].append(b_score_3)
 
-        else:
+        elif gt_item["answer_type"] == "CLOSED":
             # for close-ended question (Yes/No)
             closed_scores["q_id"].append(pred_item["question_id"])
             if "yes" in pred_value or "no" in pred_value:
@@ -150,7 +147,7 @@ def evaluate(gt, pred, candidate=None, criterion=None):
         else 0.0
     )
 
-    num_close, num_open = len(closed_scores["hit"]), len(open_hit_scores["hit"])
+    num_open, num_close = len(closed_scores["hit"]), len(open_hit_scores["hit"])
     print(f"num_open {num_open} || num_close {num_close}")
 
     return tabulate(
@@ -180,12 +177,12 @@ if __name__ == "__main__":
     candidate = json.load(open(args.candidate, "r"))
     pred = load_jsonl(args.pred)
 
-    gt_ids = [(item.get("question_id", None) or item.get("qid")) for item in gt]
+    gt_ids = [item["id"] for item in gt]
     pred_ids = [item["question_id"] for item in pred]
     num_gt_ids, num_pred_ids = len(gt_ids), len(pred_ids)
     print(f"num_gt_ids: {num_gt_ids} || num_pred_ids: {num_pred_ids}")
     # import pdb; pdb.set_trace()
-    # assert gt_ids == pred_ids, "please make sure pred and gt are exactly matched"
+    assert gt_ids == pred_ids, "please make sure pred and gt are exactly matched"
 
     # perform evaluation
     results = evaluate(gt, pred, candidate)

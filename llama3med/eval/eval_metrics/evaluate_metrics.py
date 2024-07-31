@@ -1,10 +1,10 @@
 import math
-from .utils import *
+
 from .glossary import *
+from .utils import *
 
 
 def bleu(candidate, references, n, weights):
-
     pn = []
     bp = brevity_penalty(candidate, references)
     for i in range(n):
@@ -40,7 +40,6 @@ def calculate_bleu(weights, pn, n, bp):
 
 # Exact match
 def calculate_exactmatch(candidate, reference):
-
     candidate = normalize_word(candidate)
     reference = normalize_word(reference)
 
@@ -64,7 +63,6 @@ def calculate_exactmatch(candidate, reference):
 
 
 def similarity_candidate_prediction(candidate_answer, prediction):
-
     candidate_answer = split_sentence(candidate_answer, 1)
 
     count = 0
@@ -86,7 +84,6 @@ def argmax(lst):
 
 
 def calculate_appearance_with_normalization(prediction, reference, candidate_set):
-
     prediction = normalize_word(prediction)
     reference = normalize_word(reference)
     prediction_words = split_sentence(prediction, 1)
@@ -95,7 +92,6 @@ def calculate_appearance_with_normalization(prediction, reference, candidate_set
     similarity_list = []
     candidate_answer_normalized_list = []
     for candidate_answer in candidate_set:
-
         if isinstance(candidate_answer, int):
             candidate_answer = str(candidate_answer)
 
@@ -117,7 +113,6 @@ def calculate_appearance_with_normalization(prediction, reference, candidate_set
 
 # F1
 def calculate_f1score(candidate, reference):
-
     candidate = normalize_word(candidate)
     reference = normalize_word(reference)
 
