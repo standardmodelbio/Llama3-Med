@@ -73,9 +73,9 @@ class Template:
         for i, (question, answer) in enumerate(zip(question_list, answer_list)):
             if i == 0:
                 msg += self.system.apply()
-            if DEFAULT_IMAGE_TOKEN in question:
-                question = question.replace(DEFAULT_IMAGE_TOKEN, "").strip()
-                question = self.format_image_token.apply(content=question).strip()
+            # if DEFAULT_IMAGE_TOKEN in question:
+            #     question = question.replace(DEFAULT_IMAGE_TOKEN, "").strip()
+            #     question = self.format_image_token.apply(content=question).strip()
             msg += self.format_user.apply(content=question)
             msg += self.format_assistant.apply(content=answer)
         return msg

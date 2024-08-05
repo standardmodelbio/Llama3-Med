@@ -20,7 +20,7 @@ if __name__ == "__main__":
                         os.path.join("../cache/pubmedvision", image_file)
                     )
                 # sample["image"] = sample["image"][0]
-                # sample["conversations"][0]["value"] = "<image>\n" + sample["conversations"][0]["value"]
+                sample["conversations"][0]["value"] = "<image>\n" * len(sample["image"]) + sample["conversations"][0]["value"]
                 new_sample.append(sample)
             except:
                 print(sample["image"])
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                         os.path.join("../cache/pubmedvision", image_file)
                     )
                 # sample["image"] = sample["image"][0]
-                # sample["conversations"][0]["value"] = "<image>\n" + sample["conversations"][0]["value"]
+                sample["conversations"][0]["value"] = "<image>\n" * len(sample["image"]) + sample["conversations"][0]["value"]
                 new_sample.append(sample)
             except:
                 print(sample["image"])

@@ -133,31 +133,23 @@ class Llama3MedConfig(PretrainedConfig):
             )
         elif "optimus" in self.vision_model_name_or_path:
             # self.vision_config = vision_config
-        #     vision_config = {
-        #         "patch_size": 14,
-        #         "hidden_size": 1536,
-        #         "depth": 40,
-        #         "num_heads": 24,
-        #         "init_values": 1e-05,
-        #         "mlp_ratio": 5.33334,
-        #         "mlp_layer": "timm.layers.mlp.GluMlp",
-        #         "act_layer": "SiLU",
-        #         "reg_tokens": 4,
-        #         "no_embed_class": True,
-        #         "img_size": 224,
-        #         "num_classes": 0,
-        #         "in_chans": 3,
-        #     }
-            self.vision_config = CONFIG_MAPPING["clip_vision_model"](
-                intermediate_size=4096,
-                hidden_size=1024,
-                patch_size=14,
-                image_size=336,
-                num_hidden_layers=24,
-                num_attention_heads=16,
-                vocab_size=32000,
-                projection_dim=768,
-            )
+            vision_config = {
+                "patch_size": 14,
+                "hidden_size": 1536,
+                "depth": 40,
+                "num_heads": 24,
+                "init_values": 1e-05,
+                "mlp_ratio": 5.33334,
+                "mlp_layer": "timm.layers.mlp.GluMlp",
+                "act_layer": "SiLU",
+                "reg_tokens": 4,
+                "no_embed_class": True,
+                "img_size": 224,
+                "num_classes": 0,
+                "in_chans": 3,
+                "s2_scales": "224,672,1344"
+            }
+            self.vision_config = CONFIG_MAPPING["clip_vision_model"]()
             self.vision_config = self.vision_config.from_dict(vision_config)
         else:
             self.vision_config = AutoConfig.from_pretrained(
@@ -175,5 +167,8 @@ class Llama3MedConfig(PretrainedConfig):
         self.vision_config.model_name_or_path2 = self.vision_model_name_or_path2.split(
             ":"
         )[-1]
+        self.s2_scales = getattr(self.vision_config, "s2_scales", None)
         self.vision_hidden_size = getattr(self.vision_config, "hidden_size", None)
+        if self.s2_scales:
+            self.vision_hidden_size *= len(self.s2_scales.split(","))
         print(self.vision_config)

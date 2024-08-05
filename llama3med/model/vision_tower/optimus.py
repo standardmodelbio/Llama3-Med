@@ -45,10 +45,12 @@ class OptimusVisionTower(VisionTower):
         self._image_processor = AutoImageProcessor.from_pretrained(
             "openai/clip-vit-large-patch14"
         )
+        self._image_processor.crop_size = 1344
+        self._image_processor.size = 1344
         self._image_processor.image_mean = [0.707223, 0.578729, 0.703617]
         self._image_processor.image_std = [0.211883, 0.230117, 0.177517]
 
-        self.s2_scales = getattr(cfg, "s2_scales", "224,896,1344")
+        self.s2_scales = getattr(cfg, "s2_scales", "224,672,1344")
         self.s2_scales = list(map(int, self.s2_scales.split(",")))
         self.s2_scales.sort()
         self.s2_split_size = self.s2_scales[0]
@@ -81,7 +83,8 @@ class OptimusVisionTower(VisionTower):
         image_features = self._vision_tower.forward_features(x)
 
         if kwargs.get("vision_feature_select_strategy", "patch") == "patch":
-            image_features = image_features[:, 1:]
+            num_prefix_tokens = self.params["reg_tokens"] + 1
+            image_features = image_features[:, num_prefix_tokens:]
         elif kwargs.get("vision_feature_select_strategy", "patch") == "cls_patch":
             image_features = image_features
         else:
@@ -95,6 +98,7 @@ class OptimusVisionTower(VisionTower):
         if type(images) is list:
             image_features = []
             for image in images:
+                print(image.shape)
                 image_feature = self.multiscale_forward(
                     self.forward_feature,
                     image,
@@ -104,6 +108,7 @@ class OptimusVisionTower(VisionTower):
                 )
                 image_features.append(image_feature)  # [(num_images x h x w, c)]
         else:
+            print(images.shape)
             image_features = self.multiscale_forward(
                 self.forward_feature,
                 images,

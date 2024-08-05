@@ -8,7 +8,7 @@
 
 # IGNORE_INDEX = 128003
 # IMAGE_TOKEN_INDEX = 128002
-# DEFAULT_IMAGE_TOKEN = "<|reserved_special_token_0|>"
+# DEFAULT_IMAGE_TOKEN = "<image>"
 # IS_TOKENIZER_GREATER_THAN_0_14 = version.parse(tokenizers.__version__) >= version.parse(
 #     "0.14"
 # )
@@ -108,7 +108,7 @@
 #         "role": "system",
 #         "content": "You are a pirate chatbot who always responds in pirate speak!",
 #     },
-#     {"role": "user", "content": "What is of this image?"},
+#     {"role": "user", "content": "<image>\n<image>\nWhat are these images?"},
 #     {"role": "assistant", "content": "It's a dog"},
 #     {
 #         "role": "user",
@@ -141,25 +141,26 @@
 # total_len = int(labels.ne(tokenizer.pad_token_id).sum())
 # if tokenizer.pad_token_id == tokenizer.eos_token_id:
 #     total_len += prompt.count(eos_token)
-# # rounds = prompt.split(sep)
-# print(total_len)
+# rounds = prompt.split(sep)
+# # print(total_len)
 # rounds = separate_rounds(prompt)
 # # print(rounds)
 # # eos_token_length = len(tokenizer.encode(eos_token))
 
 # masks = make_masks(labels, tokenizer, sep=sep, eos_token_length=1, rounds=rounds)
-# # print([tokenizer.decode(masks[0])])
-# print(masks)
+# print([tokenizer.decode(masks[0])])
+# # print(masks)
 # # print([tokenizer.decode(tokenizer_image_token(prompt, tokenizer))])
 # # print([input_ids])
 
-# print([tokenizer.decode([128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#           2181,    596,    264,   5679, 128009, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003,
-#         128003, 128003, 128003,    564,     13, 128009, 128003, 128003, 128003,
-#         128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003, 128003])])
+# # print([tokenizer.decode([128000, 128006,   9125, 128007,    271,  38766,   1303,  33025,   2696,
+# #             25,   6790,    220,   2366,     18,    198,  15724,   2696,     25,
+# #            220,   1627,  10263,    220,   2366,     19,    271,   2675,    527,
+# #            264,  55066,   6369,   6465,    889,   2744,  31680,    304,  55066,
+# #           6604,      0, 128009, 128006,    882, 128007,    271,     27,   1843,
+# #            397,     27,   1843,    397,   3923,    527,   1521,   5448,     30,
+# #         128009, 128006,  78191, 128007,    271,   2181,    596,    264,   5679,
+# #         128009, 128006,    882, 128007,    271,   4438,    596,    415,    279,
+# #           5679,   1427,   1093,     30, 128009, 128006,  78191, 128007,    271,
+# #            564,     13, 128009, 128006,    882, 128007,    271,   4438,   1587,
+# #            279,   5679,   1427,   2733,     30, 128009])])
