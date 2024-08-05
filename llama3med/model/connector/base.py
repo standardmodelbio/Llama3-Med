@@ -33,4 +33,10 @@ class Connector(nn.Module):
             p.requires_grad = False
 
     def forward(self, x):
-        return self._connector(x)
+        if type(x) is list:
+            features = []
+            for sample in x:
+                features.append(self._connector(sample.unsqueeze(0)).squeeze(0))
+        else:
+            features = self._connector(x)
+        return features

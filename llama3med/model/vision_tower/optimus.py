@@ -7,6 +7,7 @@ from transformers import AutoImageProcessor
 
 from . import register_vision_tower
 from .base import VisionTower
+from .s2wrapper import forward as multiscale_forward
 
 
 def get_value_from_kwargs(kwargs, name):
@@ -47,11 +48,21 @@ class OptimusVisionTower(VisionTower):
         self._image_processor.image_mean = [0.707223, 0.578729, 0.703617]
         self._image_processor.image_std = [0.211883, 0.230117, 0.177517]
 
+        self.s2_scales = getattr(cfg, "s2_scales", "224,896,1344")
+        self.s2_scales = list(map(int, self.s2_scales.split(",")))
+        self.s2_scales.sort()
+        self.s2_split_size = self.s2_scales[0]
+        self.s2_image_size = self.s2_scales[-1]
+
+        self.multiscale_forward = multiscale_forward
+
     def _load_model(self, vision_tower_name, **kwargs):
         pretrained_vision_tower_path = get_value_from_kwargs(
             kwargs, "pretrained_vision_tower_path"
         )
-        pretrained_vision_tower_path = os.path.join("/home/user/cache/checkpoints", vision_tower_name)
+        pretrained_vision_tower_path = os.path.join(
+            "/home/user/cache/checkpoints", vision_tower_name
+        )
         if pretrained_vision_tower_path is not None:
             vision_tower_weights = torch.load(
                 os.path.join(pretrained_vision_tower_path, "checkpoint.pth"),
@@ -63,9 +74,10 @@ class OptimusVisionTower(VisionTower):
 
         print("Loading vision tower from ", vision_tower_name)
 
-    def forward(self, x, **kwargs):
-        device = x.data.device
-        self.to(device)
+    @torch.no_grad()
+    def forward_feature(self, x, **kwargs):
+        # device = x.data.device
+        # self.to(device)
         image_features = self._vision_tower.forward_features(x)
 
         if kwargs.get("vision_feature_select_strategy", "patch") == "patch":
@@ -76,4 +88,27 @@ class OptimusVisionTower(VisionTower):
             raise ValueError(
                 f"Unexpected select feature: {kwargs.get('vision_feature_select_strategy')}"
             )
+        return image_features
+
+    @torch.no_grad()
+    def forward(self, images, **kwargs):
+        if type(images) is list:
+            image_features = []
+            for image in images:
+                image_feature = self.multiscale_forward(
+                    self.forward_feature,
+                    image,
+                    img_sizes=self.s2_scales,
+                    max_split_size=self.s2_split_size,
+                    multi_images=True
+                )
+                image_features.append(image_feature)  # [(num_images x h x w, c)]
+        else:
+            image_features = self.multiscale_forward(
+                self.forward_feature,
+                images,
+                img_sizes=self.s2_scales,
+                max_split_size=self.s2_split_size,
+                multi_images=False
+            ) # (batch, (h x w), c)
         return image_features

@@ -51,6 +51,7 @@ class VisionTower(nn.Module):
 
         print("Loading vision tower from ", vision_tower_name)
 
+    @torch.no_grad()
     def forward(self, x, **kwargs):
         image_features = self._vision_tower(x, output_hidden_states=True)
         image_features = image_features.hidden_states[

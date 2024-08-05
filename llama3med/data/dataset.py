@@ -42,7 +42,7 @@ class LazySupervisedDataset(Dataset):
     def lengths(self):
         length_list = []
         for sample in self.list_data_dict:
-            img_tokens = 128 if "image" in sample else 0
+            img_tokens = 256 * len(sample["image"]) if "image" in sample else 0
             length_list.append(
                 sum(len(conv["value"].split()) for conv in sample["conversations"])
                 + img_tokens
@@ -64,11 +64,11 @@ class LazySupervisedDataset(Dataset):
         sources = self.list_data_dict[i]
         data_dict = self.text_preprocess(copy.deepcopy(sources["conversations"]))
         if "image" in sources:
-            image_file = self.list_data_dict[i]["image"]
+            image_files = self.list_data_dict[i]["image"]
             image_folder = self.data_args.image_folder
-            image = Image.open(os.path.join(image_folder, image_file)).convert("RGB")
-            image = self.image_preprocess(image)
-            data_dict["image"] = image
+            images = [Image.open(os.path.join(image_folder, image_file)).convert("RGB") for image_file in image_files]
+            images = self.image_preprocess(images)
+            data_dict["image"] = torch.stack(images) # (num_images, channels, height, width)
         elif self.data_args.is_multimodal:
             # image does not exist in the data, but the model is multimodal
             # print(f'{i}:{sources}')
@@ -77,7 +77,7 @@ class LazySupervisedDataset(Dataset):
                 "crop_size",
                 getattr(self.data_args.image_processor, "size"),
             )
-            data_dict["image"] = torch.zeros(3, crop_size["height"], crop_size["width"])
+            data_dict["image"] = torch.zeros(1, 3, crop_size["height"], crop_size["width"])
         return data_dict
 
 
@@ -118,8 +118,8 @@ class DataCollatorForSupervisedDataset(object):
 
         if "image" in instances[0]:
             images = [instance["image"] for instance in instances]
-            if all(x is not None and x.shape == images[0].shape for x in images):
-                batch["images"] = torch.stack(images)
+            if all(x is not None and x.shape == images[0].shape and x.shape[0] == 1 for x in images):
+                batch["images"] = torch.cat(images, dim=0)
             else:
                 batch["images"] = images
 

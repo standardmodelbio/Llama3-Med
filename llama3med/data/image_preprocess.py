@@ -20,18 +20,27 @@ class ImagePreprocess:
         self.image_processor = image_processor
         self.image_grid_pinpoints = getattr(data_args, "image_grid_pinpoints", None)
 
-    def __call__(self, image):
+    def __call__(self, images):
         if self.image_aspect_ratio == "pad":
-            image = self.expand2square(
-                image, tuple(int(x * 255) for x in self.image_processor.image_mean)
-            )
+            images = [
+                self.expand2square(
+                    image, tuple(int(x * 255) for x in self.image_processor.image_mean)
+                )
+                for image in images
+            ]
         elif self.image_aspect_ratio == "anyres":
-            image = self.process_anyres_image(
-                image, self.image_processor, self.image_grid_pinpoints
-            )
-            return image
-        image = self.image_processor(image, return_tensors="pt")["pixel_values"][0]
-        return image
+            images = [
+                self.process_anyres_image(
+                    image, self.image_processor, self.image_grid_pinpoints
+                )
+                for image in images
+            ]
+            return images
+        images = [
+            self.image_processor(image, return_tensors="pt")["pixel_values"][0]
+            for image in images
+        ]
+        return images
 
     @classmethod
     def expand2square(cls, pil_img, background_color):
