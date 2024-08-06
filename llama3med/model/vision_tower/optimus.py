@@ -37,6 +37,7 @@ class OptimusVisionTower(VisionTower):
         "img_size": 224,
         "num_classes": 0,
         "in_chans": 3,
+        "weight_init": "skip"
     }
 
     def __init__(self, cfg):
@@ -63,7 +64,7 @@ class OptimusVisionTower(VisionTower):
             kwargs, "pretrained_vision_tower_path"
         )
         pretrained_vision_tower_path = os.path.join(
-            "/home/user/cache/checkpoints", vision_tower_name
+            "../checkpoints", vision_tower_name
         )
         if pretrained_vision_tower_path is not None:
             vision_tower_weights = torch.load(
@@ -98,7 +99,6 @@ class OptimusVisionTower(VisionTower):
         if type(images) is list:
             image_features = []
             for image in images:
-                print(image.shape)
                 image_feature = self.multiscale_forward(
                     self.forward_feature,
                     image,
@@ -108,7 +108,6 @@ class OptimusVisionTower(VisionTower):
                 )
                 image_features.append(image_feature)  # [(num_images x h x w, c)]
         else:
-            print(images.shape)
             image_features = self.multiscale_forward(
                 self.forward_feature,
                 images,

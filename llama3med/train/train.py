@@ -1,3 +1,4 @@
+import torch
 import tokenizers
 import transformers
 from packaging import version
@@ -38,7 +39,8 @@ def _load_llm_settings(model_arguments):
     llm_args["cache_dir"] = model_arguments.cache_dir
     llm_args["attn_implementation"] = (
         model_arguments.attn_implementation
-    )  # flash_attention_2 only supports torch.float16 and torch.bfloat16 dtypes
+    )
+    llm_args["torch_dtype"] = torch.bfloat16  # flash_attention_2 only supports torch.float16 and torch.bfloat16 dtypes
     return llm_args
 
 

@@ -1,9 +1,9 @@
-DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json #pretrain annotation file path
-FINETUNE_DATA_PATH=/home/user/cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json #finetune annotation file path
-IMAGE_PATH=/home/user/cache/pubmedvision/ #pretrain image dir
-FINETUNE_IMAGE_PATH=/home/user/cache/pubmedvision/ #finetune image dir
+DATA_PATH=$HOME/cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json #pretrain annotation file path
+FINETUNE_DATA_PATH=$HOME/cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json #finetune annotation file path
+IMAGE_PATH=$HOME/cache/pubmedvision/ #pretrain image dir
+FINETUNE_IMAGE_PATH=$HOME/cache/pubmedvision/ #finetune image dir
 
-LLM_VERSION=meta-llama/Meta-Llama-3.1-8B-Instruct # llm path in huggingface
+LLM_VERSION=meta-llama/Meta-Llama-3.1-70B-Instruct # llm path in huggingface
 VT_VERSION=h-optimus-0 #vision tower path in huggingface
 VT_VERSION2="" #if you are not using mof vision tower, keep it empty
 CN_VERSION=mlp2x_gelu #connector type, other options are: qformer, resampler, etc

@@ -52,11 +52,11 @@ def load_pretrained_model(
         )
     else:
         kwargs["torch_dtype"] = torch.float16
+        
     if model_name_or_path is not None and "lora" not in model_name_or_path:
         model = Llama3MedForConditionalGeneration.from_pretrained(
             model_name_or_path, low_cpu_mem_usage=True, torch_dtype=torch.bfloat16
         )
-
     elif model_name_or_path is not None and "lora" in model_name_or_path:
         if os.path.exists(os.path.join(model_name_or_path, "adapter_config.json")):
             logger.info("intialize Llama3MedConfig...")

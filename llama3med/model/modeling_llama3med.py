@@ -29,7 +29,7 @@ class Llama3MedPreTrainedModel(PreTrainedModel):
     config_class = Llama3MedConfig
     base_model_prefix = "model"
     supports_gradient_checkpointing = True
-    _no_split_modules = ["LlavaVisionAttention"]
+    _no_split_modules = ["LlamaDecoderLayer"]
     _skip_keys_device_placement = "past_key_values"
     _supports_flash_attn_2 = True
 
@@ -61,9 +61,10 @@ class Llama3MedForConditionalGeneration(Llama3MedPreTrainedModel):
     def __init__(self, config: Llama3MedConfig):
         super().__init__(config)
         logger.info("initialize langauge model...")
-        self.language_model = LLMFactory(config.llm_model_name_or_path)[0](
-            config.text_config
-        )
+        # self.language_model = LLMFactory(config.llm_model_name_or_path)[0](
+        #     config.text_config
+        # )
+        self.language_model = LLMFactory(config.llm_model_name_or_path)[0]
         logger.info("initialize vision tower...")
         self.vision_tower = VisionTowerFactory(config.vision_model_name_or_path)(
             config.vision_config
@@ -83,26 +84,26 @@ class Llama3MedForConditionalGeneration(Llama3MedPreTrainedModel):
         )
         self.post_init()
 
-    def get_input_embeddings(self):
-        return self.language_model.get_input_embeddings()
+    # def get_input_embeddings(self):
+    #     return self.language_model.get_input_embeddings()
 
-    def set_input_embeddings(self, value):
-        self.language_model.set_input_embeddings(value)
+    # def set_input_embeddings(self, value):
+    #     self.language_model.set_input_embeddings(value)
 
-    def get_output_embeddings(self):
-        return self.language_model.get_output_embeddings()
+    # def get_output_embeddings(self):
+    #     return self.language_model.get_output_embeddings()
 
-    def set_output_embeddings(self, new_embeddings):
-        self.language_model.set_output_embeddings(new_embeddings)
+    # def set_output_embeddings(self, new_embeddings):
+    #     self.language_model.set_output_embeddings(new_embeddings)
 
-    def set_decoder(self, decoder):
-        self.language_model.set_decoder(decoder)
+    # def set_decoder(self, decoder):
+    #     self.language_model.set_decoder(decoder)
 
-    def get_decoder(self):
-        return self.language_model.get_decoder()
+    # def get_decoder(self):
+    #     return self.language_model.get_decoder()
 
-    def tie_weights(self):
-        return self.language_model.tie_weights()
+    # def tie_weights(self):
+    #     return self.language_model.tie_weights()
 
     def resize_token_embeddings(
         self, new_num_tokens: Optional[int] = None, pad_to_multiple_of=None
