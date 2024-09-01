@@ -12,8 +12,8 @@ def process_file(modality, input_file, output_file, image_dir):
         data = json.load(f)
 
     new_sample = []
-    for sample in tqdm(data, desc="Processing samples"):
-        if sample["modality"] == modality:
+    if not modality:
+        for sample in tqdm(data, desc="Processing samples"):
             try:
                 for image_file in sample["image"]:
                     Image.open(os.path.join(image_dir, image_file))
@@ -24,6 +24,19 @@ def process_file(modality, input_file, output_file, image_dir):
                 new_sample.append(sample)
             except Exception as e:
                 logger.warning(f"Error processing {sample['image']}: {e}")
+    else:
+        for sample in tqdm(data, desc="Processing samples"):
+            if sample["modality"] == modality:
+                try:
+                    for image_file in sample["image"]:
+                        Image.open(os.path.join(image_dir, image_file))
+                    sample["conversations"][0]["value"] = (
+                        "<image>\n" * len(sample["image"])
+                        + sample["conversations"][0]["value"]
+                    )
+                    new_sample.append(sample)
+                except Exception as e:
+                    logger.warning(f"Error processing {sample['image']}: {e}")
 
     with open(output_file, "w") as f:
         json.dump(new_sample, f, indent=2)
@@ -33,7 +46,7 @@ def main():
     parser = argparse.ArgumentParser(description="Process PubMedVision JSON files.")
     parser.add_argument(
         "--modality",
-        default="Digital Photography",
+        default=None,
         help="Modality to extract",
     )
     parser.add_argument(
