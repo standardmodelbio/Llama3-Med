@@ -2,18 +2,13 @@ import os
 from collections import OrderedDict
 
 import torch
+from loguru import logger
 from transformers import (
     BitsAndBytesConfig,
 )
 
 from .configuration_llama3med import Llama3MedConfig
 from .modeling_llama3med import Llama3MedForConditionalGeneration
-
-import logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
 
 
 def load_base_ckp_for_lora(ckp_path):
@@ -52,7 +47,7 @@ def load_pretrained_model(
         )
     else:
         kwargs["torch_dtype"] = torch.float16
-        
+
     if model_name_or_path is not None and "lora" not in model_name_or_path:
         model = Llama3MedForConditionalGeneration.from_pretrained(
             model_name_or_path, low_cpu_mem_usage=True, torch_dtype=torch.bfloat16
