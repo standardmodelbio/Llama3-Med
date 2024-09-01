@@ -1,56 +1,72 @@
+import argparse
 import json
 import os
+from loguru import logger
 
 from PIL import Image
 from tqdm import tqdm
 
-if __name__ == "__main__":
-    # Alignment
-    file_path = "../cache/pubmedvision/PubMedVision_Alignment_VQA.json"
 
-    with open(file_path, "r") as f:
+def process_file(input_file, output_file, image_dir):
+    with open(input_file, "r") as f:
         data = json.load(f)
 
     new_sample = []
-    for sample in tqdm(data):
+    for sample in tqdm(data, desc="Processing samples"):
         if sample["modality"] == "Digital Photography":
             try:
                 for image_file in sample["image"]:
-                    image = Image.open(
-                        os.path.join("../cache/pubmedvision", image_file)
-                    )
-                # sample["image"] = sample["image"][0]
-                sample["conversations"][0]["value"] = "<image>\n" * len(sample["image"]) + sample["conversations"][0]["value"]
+                    Image.open(os.path.join(image_dir, image_file))
+                sample["conversations"][0]["value"] = (
+                    "<image>\n" * len(sample["image"])
+                    + sample["conversations"][0]["value"]
+                )
                 new_sample.append(sample)
-            except:
-                print(sample["image"])
+            except Exception as e:
+                print(f"Error processing {sample['image']}: {e}")
 
-    save_file_path = "../cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json"
-    with open(save_file_path, "w") as f:
+    with open(output_file, "w") as f:
         json.dump(new_sample, f, indent=2)
 
-    # InstructionTuning
-    file_path = "../cache/pubmedvision/PubMedVision_InstructionTuning_VQA.json"
 
-    with open(file_path, "r") as f:
-        data = json.load(f)
-
-    new_sample = []
-    for sample in tqdm(data):
-        if sample["modality"] == "Digital Photography":
-            try:
-                for image_file in sample["image"]:
-                    image = Image.open(
-                        os.path.join("../cache/pubmedvision", image_file)
-                    )
-                # sample["image"] = sample["image"][0]
-                sample["conversations"][0]["value"] = "<image>\n" * len(sample["image"]) + sample["conversations"][0]["value"]
-                new_sample.append(sample)
-            except:
-                print(sample["image"])
-
-    save_file_path = (
-        "../cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json"
+def main():
+    parser = argparse.ArgumentParser(description="Process PubMedVision JSON files.")
+    parser.add_argument(
+        "--align_input",
+        default="../cache/pubmedvision/PubMedVision_Alignment_VQA.json",
+        help="Input file path for Alignment data",
     )
-    with open(save_file_path, "w") as f:
-        json.dump(new_sample, f, indent=2)
+    parser.add_argument(
+        "--align_output",
+        default="../cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json",
+        help="Output file path for processed Alignment data",
+    )
+    parser.add_argument(
+        "--instruct_input",
+        default="../cache/pubmedvision/PubMedVision_InstructionTuning_VQA.json",
+        help="Input file path for InstructionTuning data",
+    )
+    parser.add_argument(
+        "--instruct_output",
+        default="../cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json",
+        help="Output file path for processed InstructionTuning data",
+    )
+    parser.add_argument(
+        "--image_dir",
+        default="../cache/pubmedvision",
+        help="Directory containing the image files",
+    )
+
+    args = parser.parse_args()
+
+    print("Processing Alignment data...")
+    process_file(args.align_input, args.align_output, args.image_dir)
+
+    print("Processing InstructionTuning data...")
+    process_file(args.instruct_input, args.instruct_output, args.image_dir)
+
+    print("Processing complete.")
+
+
+if __name__ == "__main__":
+    main()
