@@ -2,6 +2,7 @@ import os
 
 import torch
 import torch.nn as nn
+from loguru import logger
 
 
 class Connector(nn.Module):
@@ -27,7 +28,7 @@ class Connector(nn.Module):
                 }
 
             self._connector.load_state_dict(get_w(connector_weights, "_connector"))
-            print(f"Loading connector from {pretrained_connector_path}...")
+            logger.info(f"Loading connector from {pretrained_connector_path}...")
 
         for p in self._connector.parameters():
             p.requires_grad = False

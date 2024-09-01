@@ -1,4 +1,4 @@
-from transformers import AutoModelForCausalLM, AutoConfig
+from transformers import AutoModelForCausalLM, AutoConfig, LlamaForCausalLM
 
 
 if __name__ == "__main__":
@@ -10,14 +10,17 @@ if __name__ == "__main__":
     text_config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
     print(text_config)
     # Create the model instance without initializing weights
-    model = AutoModelForCausalLM.from_pretrained(model_id)
+    # model = AutoModelForCausalLM.from_pretrained(model_id)
+    model = LlamaForCausalLM
+
+    model = model.from_pretrained(model_id)
 
     print(model)  # This will show the model architecture
-    print(f"Model parameters: {sum(p.numel() for p in model.parameters())}")
+    # print(f"Model parameters: {sum(p.numel() for p in model.parameters())}")
 
     # Verify that weights are uninitialized
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            print(f"{name}: {param.sum().item()}")  # Should be 0 or very close to 0
+    # for name, param in model.named_parameters():
+    #     if param.requires_grad:
+    #         print(f"{name}: {param.sum().item()}")  # Should be 0 or very close to 0
 
     # quantized_model = AutoModelForCausalLM.from_config(text_config)

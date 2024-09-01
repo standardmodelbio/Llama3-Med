@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, LlamaForCausalLM
 
 from . import register_llm
 
@@ -12,4 +12,4 @@ def return_llamaclass():
         #     tokenizer.pad_token = tokenizer.unk_token
         return tokenizer
 
-    return AutoModelForCausalLM, (AutoTokenizer, tokenizer_and_post_load)
+    return LlamaForCausalLM, (AutoTokenizer, tokenizer_and_post_load)

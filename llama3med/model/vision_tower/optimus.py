@@ -64,10 +64,12 @@ class OptimusVisionTower(VisionTower):
         pretrained_vision_tower_path = get_value_from_kwargs(
             kwargs, "pretrained_vision_tower_path"
         )
-        # pretrained_vision_tower_path = os.path.join("../checkpoints", vision_tower_name)
         if pretrained_vision_tower_path is not None:
+            vision_tower_name = pretrained_vision_tower_path
+        # pretrained_vision_tower_path = os.path.join("../checkpoints", vision_tower_name)
+        if vision_tower_name is not None:
             vision_tower_weights = torch.load(
-                os.path.join(pretrained_vision_tower_path, "checkpoint.pth"),
+                os.path.join(vision_tower_name, "checkpoint.pth"),
                 map_location="cpu",
             )
             self._vision_tower.load_state_dict(vision_tower_weights)

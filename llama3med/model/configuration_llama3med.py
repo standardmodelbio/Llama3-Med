@@ -147,7 +147,7 @@ class Llama3MedConfig(PretrainedConfig):
                 "img_size": 224,
                 "num_classes": 0,
                 "in_chans": 3,
-                "s2_scales": "224,672,1344"
+                "s2_scales": "224,672,1344",
             }
             self.vision_config = CONFIG_MAPPING["clip_vision_model"]()
             self.vision_config = self.vision_config.from_dict(vision_config)
@@ -160,7 +160,7 @@ class Llama3MedConfig(PretrainedConfig):
             )
             if vision_config is not None:
                 self.vision_config = self.vision_config.from_dict(vision_config)
-        
+
         self.vision_config.model_name_or_path = self.vision_model_name_or_path.split(
             ":"
         )[-1]
@@ -171,4 +171,3 @@ class Llama3MedConfig(PretrainedConfig):
         self.vision_hidden_size = getattr(self.vision_config, "hidden_size", None)
         if self.s2_scales:
             self.vision_hidden_size *= len(self.s2_scales.split(","))
-        print(self.vision_config)
