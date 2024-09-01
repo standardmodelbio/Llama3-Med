@@ -23,7 +23,7 @@ def process_file(modality, input_file, output_file, image_dir):
                 )
                 new_sample.append(sample)
             except Exception as e:
-                print(f"Error processing {sample['image']}: {e}")
+                logger.warning(f"Error processing {sample['image']}: {e}")
 
     with open(output_file, "w") as f:
         json.dump(new_sample, f, indent=2)
