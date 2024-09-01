@@ -1,19 +1,19 @@
 import argparse
 import json
 import os
-from loguru import logger
 
+from loguru import logger
 from PIL import Image
 from tqdm import tqdm
 
 
-def process_file(input_file, output_file, image_dir):
+def process_file(modality, input_file, output_file, image_dir):
     with open(input_file, "r") as f:
         data = json.load(f)
 
     new_sample = []
     for sample in tqdm(data, desc="Processing samples"):
-        if sample["modality"] == "Digital Photography":
+        if sample["modality"] == modality:
             try:
                 for image_file in sample["image"]:
                     Image.open(os.path.join(image_dir, image_file))
@@ -31,6 +31,11 @@ def process_file(input_file, output_file, image_dir):
 
 def main():
     parser = argparse.ArgumentParser(description="Process PubMedVision JSON files.")
+    parser.add_argument(
+        "--modality",
+        default="Digital Photography",
+        help="Modality to extract",
+    )
     parser.add_argument(
         "--align_input",
         default="../cache/pubmedvision/PubMedVision_Alignment_VQA.json",
@@ -59,13 +64,15 @@ def main():
 
     args = parser.parse_args()
 
-    print("Processing Alignment data...")
-    process_file(args.align_input, args.align_output, args.image_dir)
+    logger.info("Processing Alignment data...")
+    process_file(args.modality, args.align_input, args.align_output, args.image_dir)
 
-    print("Processing InstructionTuning data...")
-    process_file(args.instruct_input, args.instruct_output, args.image_dir)
+    logger.info("Processing InstructionTuning data...")
+    process_file(
+        args.modality, args.instruct_input, args.instruct_output, args.image_dir
+    )
 
-    print("Processing complete.")
+    logger.info("Processing complete.")
 
 
 if __name__ == "__main__":
