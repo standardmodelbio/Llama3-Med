@@ -38,27 +38,27 @@ def main():
     )
     parser.add_argument(
         "--align_input",
-        default="../cache/pubmedvision/PubMedVision_Alignment_VQA.json",
+        default="../data/pubmedvision/PubMedVision_Alignment_VQA.json",
         help="Input file path for Alignment data",
     )
     parser.add_argument(
         "--align_output",
-        default="../cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json",
+        default="../data/pubmedvision/PubMedVision_Alignment_PATH_VQA.json",
         help="Output file path for processed Alignment data",
     )
     parser.add_argument(
         "--instruct_input",
-        default="../cache/pubmedvision/PubMedVision_InstructionTuning_VQA.json",
+        default="../data/pubmedvision/PubMedVision_InstructionTuning_VQA.json",
         help="Input file path for InstructionTuning data",
     )
     parser.add_argument(
         "--instruct_output",
-        default="../cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json",
+        default="../data/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json",
         help="Output file path for processed InstructionTuning data",
     )
     parser.add_argument(
         "--image_dir",
-        default="../cache/pubmedvision",
+        default="../data/pubmedvision",
         help="Directory containing the image files",
     )
 
