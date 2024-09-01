@@ -73,6 +73,9 @@ class Template:
         for i, (question, answer) in enumerate(zip(question_list, answer_list)):
             if i == 0:
                 msg += self.system.apply()
+            assert (
+                DEFAULT_IMAGE_TOKEN in question
+            ), f"{DEFAULT_IMAGE_TOKEN} is not present in text"
             # if DEFAULT_IMAGE_TOKEN in question:
             #     question = question.replace(DEFAULT_IMAGE_TOKEN, "").strip()
             #     question = self.format_image_token.apply(content=question).strip()

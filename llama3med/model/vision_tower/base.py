@@ -2,6 +2,7 @@ import os
 
 import torch
 import torch.nn as nn
+from loguru import logger
 from transformers import PreTrainedModel
 
 
@@ -49,7 +50,7 @@ class VisionTower(nn.Module):
 
                 self._vision_tower.load_state_dict(vision_tower_weights)
 
-        print("Loading vision tower from ", vision_tower_name)
+        logger.info("Loading vision tower from ", vision_tower_name)
 
     @torch.no_grad()
     def forward(self, x, **kwargs):

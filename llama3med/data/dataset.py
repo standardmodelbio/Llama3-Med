@@ -66,9 +66,14 @@ class LazySupervisedDataset(Dataset):
         if "image" in sources:
             image_files = self.list_data_dict[i]["image"]
             image_folder = self.data_args.image_folder
-            images = [Image.open(os.path.join(image_folder, image_file)).convert("RGB") for image_file in image_files]
+            images = [
+                Image.open(os.path.join(image_folder, image_file)).convert("RGB")
+                for image_file in image_files
+            ]
             images = self.image_preprocess(images)
-            data_dict["image"] = torch.stack(images) # (num_images, channels, height, width)
+            data_dict["image"] = torch.stack(
+                images
+            )  # (num_images, channels, height, width)
         elif self.data_args.is_multimodal:
             # image does not exist in the data, but the model is multimodal
             # print(f'{i}:{sources}')
@@ -77,7 +82,9 @@ class LazySupervisedDataset(Dataset):
                 "crop_size",
                 getattr(self.data_args.image_processor, "size"),
             )
-            data_dict["image"] = torch.zeros(1, 3, crop_size["height"], crop_size["width"])
+            data_dict["image"] = torch.zeros(
+                1, 3, crop_size["height"], crop_size["width"]
+            )
         return data_dict
 
 

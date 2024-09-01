@@ -39,8 +39,8 @@ deepspeed llama3med/train/train.py \
     --tune_vision_tower_from_layer 0 \
     --tune_type_connector full \
     --group_by_modality_length True \
-    --pretrained_model_path /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain \
-    --output_dir /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-finetune \
+    --pretrained_model_path ../checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain \
+    --output_dir ../checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-finetune \
     --num_train_epochs 1 \
     --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 4 \

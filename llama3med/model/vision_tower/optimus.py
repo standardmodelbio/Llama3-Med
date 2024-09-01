@@ -3,6 +3,7 @@ import os
 
 import timm
 import torch
+from loguru import logger
 from transformers import AutoImageProcessor
 
 from . import register_vision_tower
@@ -37,7 +38,7 @@ class OptimusVisionTower(VisionTower):
         "img_size": 224,
         "num_classes": 0,
         "in_chans": 3,
-        "weight_init": "skip"
+        "weight_init": "skip",
     }
 
     def __init__(self, cfg):
@@ -63,9 +64,7 @@ class OptimusVisionTower(VisionTower):
         pretrained_vision_tower_path = get_value_from_kwargs(
             kwargs, "pretrained_vision_tower_path"
         )
-        pretrained_vision_tower_path = os.path.join(
-            "../checkpoints", vision_tower_name
-        )
+        # pretrained_vision_tower_path = os.path.join("../checkpoints", vision_tower_name)
         if pretrained_vision_tower_path is not None:
             vision_tower_weights = torch.load(
                 os.path.join(pretrained_vision_tower_path, "checkpoint.pth"),
@@ -75,7 +74,7 @@ class OptimusVisionTower(VisionTower):
         else:
             raise ValueError
 
-        print("Loading vision tower from ", vision_tower_name)
+        logger.info(f"Loading vision tower from {vision_tower_name}")
 
     @torch.no_grad()
     def forward_feature(self, x, **kwargs):
@@ -104,7 +103,7 @@ class OptimusVisionTower(VisionTower):
                     image,
                     img_sizes=self.s2_scales,
                     max_split_size=self.s2_split_size,
-                    multi_images=True
+                    multi_images=True,
                 )
                 image_features.append(image_feature)  # [(num_images x h x w, c)]
         else:
@@ -113,6 +112,6 @@ class OptimusVisionTower(VisionTower):
                 images,
                 img_sizes=self.s2_scales,
                 max_split_size=self.s2_split_size,
-                multi_images=False
-            ) # (batch, (h x w), c)
+                multi_images=False,
+            )  # (batch, (h x w), c)
         return image_features

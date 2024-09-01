@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.utils.checkpoint
+from loguru import logger
 from torch import nn
 from transformers import PreTrainedModel
 from transformers.generation.utils import GenerateOutput
@@ -10,12 +11,6 @@ from transformers.modeling_outputs import CausalLMOutputWithPast
 from ..utils.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX
 from . import ConnectorFactory, LLMFactory, VisionTowerFactory
 from .configuration_llama3med import Llama3MedConfig
-
-import logging
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 
 def get_value_from_kwargs(kwargs, name):
@@ -453,8 +448,8 @@ class Llama3MedForConditionalGeneration(Llama3MedPreTrainedModel):
         pretrained_llm_path = get_value_from_kwargs(kwargs, "pretrained_llm_path")
         if pretrained_llm_path is not None:
             language_model_name = pretrained_llm_path
-        
-        print("loading language model from ", language_model_name)
+
+        logger.info("loading language model from ", language_model_name)
         if language_model_name is not None:
             self.language_model = self.language_model.from_pretrained(
                 language_model_name, **kwargs
