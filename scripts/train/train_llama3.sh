@@ -1,5 +1,3 @@
-export WANDB_PROJECT=llama3med
-
 DATA_PATH=$HOME/cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json #pretrain annotation file path
 FINETUNE_DATA_PATH=$HOME/cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json #finetune annotation file path
 IMAGE_PATH=$HOME/cache/pubmedvision/ #pretrain image dir

@@ -116,5 +116,4 @@ class OptimusVisionTower(VisionTower):
                 max_split_size=self.s2_split_size,
                 multi_images=False,
             )  # (batch, (h x w), c)
-            logger.info(image_features.shape)
         return image_features

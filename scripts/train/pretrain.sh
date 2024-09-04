@@ -1,4 +1,5 @@
 #!/bin/bash
+export WANDB_PROJECT=llama3med
 
 if [ $# -ne 9 ]; then
     echo "Usage: $0 <DATA_PATH> <IMAGE_PATH> <LLM_VERSION> <VT_VERSION> <VT_VERSION2> <CN_VERSION> <VERSION> <TRAIN_RECIPE> <MODEL_MAX_LENGTH>"
