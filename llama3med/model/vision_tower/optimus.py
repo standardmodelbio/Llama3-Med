@@ -69,7 +69,7 @@ class OptimusVisionTower(VisionTower):
         # pretrained_vision_tower_path = os.path.join("../checkpoints", vision_tower_name)
         if vision_tower_name is not None:
             vision_tower_weights = torch.load(
-                os.path.join(vision_tower_name, "pytorch_model.bin"),
+                os.path.join(vision_tower_name, "checkpoint.pth"),
                 map_location="cpu",
             )
             self._vision_tower.load_state_dict(vision_tower_weights)
@@ -116,4 +116,5 @@ class OptimusVisionTower(VisionTower):
                 max_split_size=self.s2_split_size,
                 multi_images=False,
             )  # (batch, (h x w), c)
+            logger.info(image_features.shape)
         return image_features

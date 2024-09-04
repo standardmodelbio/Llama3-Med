@@ -81,7 +81,7 @@ class Llama3MedForConditionalGeneration(Llama3MedPreTrainedModel):
             )
         )
 
-        self.post_init()
+        # self.post_init()
 
     def get_input_embeddings(self):
         return self.language_model.get_input_embeddings()

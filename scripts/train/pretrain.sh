@@ -16,8 +16,8 @@ VERSION="$7"
 TRAIN_RECIPE="$8"
 MODEL_MAX_LENGTH="$9"
 
-VT_VARIANT="${VT_VERSION#*/}"
-LLM_VARIANT="${LLM_VERSION#*/}"
+VT_VARIANT="${VT_VERSION##*/}"
+LLM_VARIANT="${LLM_VERSION##*/}"
 
 deepspeed llama3med/train/train.py \
     --deepspeed ./scripts/zero3.json \
