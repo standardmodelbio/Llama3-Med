@@ -32,6 +32,8 @@ pip install -e .
 
 3. Install additional packages
 ```Shell
+pip install -e ".[train]"
+
 pip install flash-attn --no-build-isolation
 ```
 #### Upgrade to the latest code base

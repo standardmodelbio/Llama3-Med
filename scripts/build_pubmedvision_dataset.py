@@ -46,7 +46,7 @@ def main():
     parser = argparse.ArgumentParser(description="Process PubMedVision JSON files.")
     parser.add_argument(
         "--modality",
-        default=None,
+        default="Digital Photography",
         help="Modality to extract",
     )
     parser.add_argument(
