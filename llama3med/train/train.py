@@ -36,6 +36,7 @@ def load_settings(model_arguments, data_arguments, training_arguments):
 def _load_llm_settings(model_arguments):
     llm_args = {}
     llm_args["model_name_or_path"] = model_arguments.model_name_or_path
+    llm_args["pretrained_llm_path"] = model_arguments.pretrained_llm_path
     llm_args["cache_dir"] = model_arguments.cache_dir
     llm_args["attn_implementation"] = (
         model_arguments.attn_implementation
@@ -51,12 +52,14 @@ def _load_vision_settings(model_arguments):
         vision_args["model_name_or_path2"] = model_arguments.vision_tower2.split(":")[
             -1
         ]
+    vision_args["pretrained_vision_tower_path"] = model_arguments.pretrained_vision_tower_path
     return vision_args
 
 
 def _load_connector_settings(model_arguments):
     connector_args = {}
     connector_args["connector_type"] = model_arguments.connector_type
+    connector_args["pretrained_connector_path"] = model_arguments.pretrained_connector_path
     return connector_args
 
 

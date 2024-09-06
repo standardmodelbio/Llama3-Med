@@ -1,6 +1,7 @@
 import os
 
 import torch
+from safetensors.torch import save_file
 from transformers import PreTrainedModel
 
 # from ..model import *
@@ -155,51 +156,55 @@ class BaseTrainingRecipe:
 
         # the followings are for pretrain stage
         # save language model
-        language_model_state_dict = get_state_maybe_zero_3(
-            model.language_model.named_parameters(), [""], False
-        )
-        if trainer.args.local_rank == 0 or trainer.args.local_rank == -1:
-            language_model_output_dir = os.path.join(
-                self.training_arguments.output_dir, "language_model"
+        if self.training_arguments.tune_type_llm != "frozen":
+            language_model_state_dict = get_state_maybe_zero_3(
+                model.language_model.named_parameters(), [""], False
             )
-            os.makedirs(language_model_output_dir, exist_ok=True)
-            language_model_output_path = os.path.join(
-                self.training_arguments.output_dir, "language_model/pytorch_model.bin"
-            )
-            torch.save(language_model_state_dict, language_model_output_path)
-            model.config.text_config.save_pretrained(
-                language_model_output_dir, from_pt=True
-            )
-        # save vision tower
-        vision_tower_state_dict = get_state_maybe_zero_3(
-            model.vision_tower._vision_tower.named_parameters(), [""], False
-        )
-        if trainer.args.local_rank == 0 or trainer.args.local_rank == -1:
-            vision_tower_output_dir = os.path.join(
-                self.training_arguments.output_dir, "vision_tower"
-            )
-            os.makedirs(vision_tower_output_dir, exist_ok=True)
-            vision_tower_output_path = os.path.join(
-                self.training_arguments.output_dir, "vision_tower/pytorch_model.bin"
-            )
-            torch.save(vision_tower_state_dict, vision_tower_output_path)
-            if isinstance(model.vision_tower._vision_tower, PreTrainedModel):
-                model.vision_tower._vision_tower.config.save_pretrained(
-                    vision_tower_output_dir, from_pt=True
+            if trainer.args.local_rank == 0 or trainer.args.local_rank == -1:
+                language_model_output_dir = os.path.join(
+                    self.training_arguments.output_dir, "language_model"
                 )
+                os.makedirs(language_model_output_dir, exist_ok=True)
+                language_model_output_path = os.path.join(
+                    self.training_arguments.output_dir,
+                    "language_model/model.safetensors",
+                )
+                save_file(language_model_state_dict, language_model_output_path)
+                model.config.text_config.save_pretrained(
+                    language_model_output_dir, from_pt=True
+                )
+        # save vision tower
+        if self.training_arguments.tune_type_vision_tower != "frozen":
+            vision_tower_state_dict = get_state_maybe_zero_3(
+                model.vision_tower._vision_tower.named_parameters(), [""], False
+            )
+            if trainer.args.local_rank == 0 or trainer.args.local_rank == -1:
+                vision_tower_output_dir = os.path.join(
+                    self.training_arguments.output_dir, "vision_tower"
+                )
+                os.makedirs(vision_tower_output_dir, exist_ok=True)
+                vision_tower_output_path = os.path.join(
+                    self.training_arguments.output_dir, "vision_tower/model.safetensors"
+                )
+                save_file(vision_tower_state_dict, vision_tower_output_path)
+                if isinstance(model.vision_tower._vision_tower, PreTrainedModel):
+                    model.vision_tower._vision_tower.config.save_pretrained(
+                        vision_tower_output_dir, from_pt=True
+                    )
         # save connector
-        connector_state_dict = get_state_maybe_zero_3(
-            model.connector.named_parameters(), [""], False
-        )
-        if trainer.args.local_rank == 0 or trainer.args.local_rank == -1:
-            connector_output_dir = os.path.join(
-                self.training_arguments.output_dir, "connector"
+        if self.training_arguments.tune_type_connector != "frozen":
+            connector_state_dict = get_state_maybe_zero_3(
+                model.connector.named_parameters(), [""], False
             )
-            os.makedirs(connector_output_dir, exist_ok=True)
-            connector_output_path = os.path.join(
-                self.training_arguments.output_dir, "connector/pytorch_model.bin"
-            )
-            torch.save(connector_state_dict, connector_output_path)
+            if trainer.args.local_rank == 0 or trainer.args.local_rank == -1:
+                connector_output_dir = os.path.join(
+                    self.training_arguments.output_dir, "connector"
+                )
+                os.makedirs(connector_output_dir, exist_ok=True)
+                connector_output_path = os.path.join(
+                    self.training_arguments.output_dir, "connector/model.safetensors"
+                )
+                save_file(connector_state_dict, connector_output_path)
 
     def load(self, model, model_args={}):
         if not (

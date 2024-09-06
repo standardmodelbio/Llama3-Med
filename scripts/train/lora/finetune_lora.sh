@@ -17,7 +17,7 @@ FINETUNE_VERSION="$9"
 TRAIN_RECIPE="${10}"
 MODEL_MAX_LENGTH="${11}"
 
-VT_VARIANT="${VT_VERSION#*/}"
+VT_VARIANT="${VT_VERSION##*/}"
 LLM_VARIANT="${LLM_VERSION#*/}"
 
 deepspeed llama3med/train/train.py \
@@ -42,12 +42,12 @@ deepspeed llama3med/train/train.py \
     --lora_r 128 \
     --lora_alpha 256 \
     --group_by_modality_length False \
-    --pretrained_model_path /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${PRETRAIN_VERSION}-pretrain \
-    --output_dir /home/user/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${FINETUNE_VERSION}-finetune \
+    --pretrained_model_path $HOME/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${PRETRAIN_VERSION}-pretrain \
+    --output_dir $HOME/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${FINETUNE_VERSION}-finetune \
     --num_train_epochs 1 \
     --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 4 \
+    --gradient_accumulation_steps 1 \
     --evaluation_strategy "no" \
     --save_strategy "steps" \
     --save_steps 50000 \

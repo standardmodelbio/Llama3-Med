@@ -30,6 +30,7 @@ deepspeed llama3med/train/train.py \
     --vision_tower $VT_VERSION \
     --vision_tower2 "$VT_VERSION2" \
     --connector_type $CN_VERSION \
+    --pretrained_connector_path $HOME/checkpoints/llama3med-Meta-Llama-3.1-8B-Instruct-h-optimus-0-base-pretrain/connector/ \
     --mm_vision_select_layer -2 \
     --image_aspect_ratio square \
     --attn_implementation flash_attention_2 \
@@ -40,7 +41,7 @@ deepspeed llama3med/train/train.py \
     --tune_vision_tower_from_layer 0 \
     --tune_type_connector full \
     --output_dir $HOME/checkpoints/llama3med-${LLM_VARIANT}-${VT_VARIANT}-${VERSION}-pretrain \
-    --num_train_epochs 1 \
+    --max_steps 2 \
     --per_device_train_batch_size 12 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 1 \

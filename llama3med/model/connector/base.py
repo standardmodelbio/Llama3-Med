@@ -1,8 +1,8 @@
 import os
 
-import torch
 import torch.nn as nn
 from loguru import logger
+from safetensors.torch import load_file
 
 
 class Connector(nn.Module):
@@ -14,11 +14,9 @@ class Connector(nn.Module):
         pretrained_connector_path = kwargs.get("pretrained_connector_path", None)
         if pretrained_connector_path is not None:
             pretrained_connector_path = os.path.join(
-                pretrained_connector_path, "pytorch_model.bin"
+                pretrained_connector_path, "model.safetensors"
             )
-            connector_weights = torch.load(
-                pretrained_connector_path, map_location="cpu"
-            )
+            connector_weights = load_file(pretrained_connector_path, device="cpu")
 
             def get_w(weights, keyword):
                 return {

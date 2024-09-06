@@ -1,10 +1,10 @@
-DATA_PATH=$HOME/cache/pubmedvision/PubMedVision_Alignment_PATH_VQA.json #pretrain annotation file path
-FINETUNE_DATA_PATH=$HOME/cache/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json #finetune annotation file path
-IMAGE_PATH=$HOME/cache/pubmedvision/ #pretrain image dir
-FINETUNE_IMAGE_PATH=$HOME/cache/pubmedvision/ #finetune image dir
+DATA_PATH=$HOME/data/pubmedvision/PubMedVision_Alignment_PATH_VQA.json #pretrain annotation file path
+FINETUNE_DATA_PATH=$HOME/data/pubmedvision/PubMedVision_InstructionTuning_PATH_VQA.json #finetune annotation file path
+IMAGE_PATH=$HOME/data/pubmedvision/ #pretrain image dir
+FINETUNE_IMAGE_PATH=$HOME/data/pubmedvision/ #finetune image dir
 
 LLM_VERSION=meta-llama/Meta-Llama-3.1-8B-Instruct # llm path in huggingface
-VT_VERSION=$HOME/cache/checkpoints/h-optimus-0 #vision tower path in huggingface
+VT_VERSION=$HOME/checkpoints/h-optimus-0 #vision tower path in huggingface
 VT_VERSION2="" #if you are not using mof vision tower, keep it empty
 CN_VERSION=mlp2x_gelu #connector type, other options are: qformer, resampler, etc
 CONV_VERSION=llama3 #chat template, other options are: phi, llama, gemmma, etc

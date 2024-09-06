@@ -14,11 +14,14 @@ class ModelArguments:
     model_name_or_path: Optional[str] = field(
         default="TinyLlama/TinyLlama-1.1B-Chat-v1.0"
     )
+    pretrained_llm_path: Optional[str] = field(default=None)
     tokenizer_name_or_path: Optional[str] = field(default=None)
     attn_implementation: Optional[str] = field(default=None)
     vision_tower: Optional[str] = field(default="")
     vision_tower2: Optional[str] = field(default="")
+    pretrained_vision_tower_path: Optional[str] = field(default=None)
     connector_type: str = field(default="linear")
+    pretrained_connector_path: Optional[str] = field(default=None)
 
     mm_vision_select_layer: Optional[int] = field(
         default=-1
