@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from loguru import logger
 from transformers import PreTrainedModel
+from .s2wrapper import forward as multiscale_forward
 
 
 def get_value_from_kwargs(kwargs, name):
@@ -19,6 +20,14 @@ class VisionTower(nn.Module):
         self._vision_tower = None
         self._image_processor = None
         self.config = cfg
+        
+        self.s2_scales = getattr(cfg, "s2_scales", "224,672,1344")
+        self.s2_scales = list(map(int, self.s2_scales.split(",")))
+        self.s2_scales.sort()
+        self.s2_split_size = self.s2_scales[0]
+        self.s2_image_size = self.s2_scales[-1]
+
+        self.multiscale_forward = multiscale_forward
 
     def load_model(self, vision_tower_name, **kwargs):
         self._load_model(vision_tower_name, **kwargs)
@@ -53,7 +62,7 @@ class VisionTower(nn.Module):
         logger.info("Loading vision tower from ", vision_tower_name)
 
     @torch.no_grad()
-    def forward(self, x, **kwargs):
+    def forward_feature(self, x, **kwargs):
         image_features = self._vision_tower(x, output_hidden_states=True)
         image_features = image_features.hidden_states[
             kwargs.get("vision_feature_layer", -2)
@@ -67,6 +76,29 @@ class VisionTower(nn.Module):
             raise ValueError(
                 f"Unexpected select feature: {kwargs.get('vision_feature_select_strategy')}"
             )
+        return image_features
+    
+    @torch.no_grad()
+    def forward(self, images, **kwargs):
+        if type(images) is list:
+            image_features = []
+            for image in images:
+                image_feature = self.multiscale_forward(
+                    self.forward_feature,
+                    image,
+                    img_sizes=self.s2_scales,
+                    max_split_size=self.s2_split_size,
+                    multi_images=True,
+                )
+                image_features.append(image_feature)  # [(num_images x h x w, c)]
+        else:
+            image_features = self.multiscale_forward(
+                self.forward_feature,
+                images,
+                img_sizes=self.s2_scales,
+                max_split_size=self.s2_split_size,
+                multi_images=False,
+            )  # (batch, (h x w), c)
         return image_features
 
     @property

@@ -13,6 +13,9 @@ class SIGLIPVisionTower(VisionTower):
             cfg.model_name_or_path
         )
 
+        self._image_processor.crop_size = self.s2_image_size
+        self._image_processor.size = self.s2_image_size
+
     # def forward(self, x, **kwargs):
     #     image_features = self._vision_tower(x, output_hidden_states=True)
     #     image_features = image_features.hidden_states[

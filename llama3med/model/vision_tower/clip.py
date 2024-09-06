@@ -12,3 +12,6 @@ class CLIPVisionTower(VisionTower):
         self._image_processor = CLIPImageProcessor.from_pretrained(
             cfg.model_name_or_path
         )
+
+        self._image_processor.crop_size = self.s2_image_size
+        self._image_processor.size = self.s2_image_size

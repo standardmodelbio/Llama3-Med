@@ -37,6 +37,7 @@ class Llama3MedConfig(PretrainedConfig):
         tune_type_connector="frozen",
         tune_type_vision_tower="frozen",
         tune_vision_tower_from_layer=-1,
+        s2_scales=None,
         **kwargs,
     ):
         self.llm_model_name_or_path = llm_model_name_or_path
@@ -50,6 +51,7 @@ class Llama3MedConfig(PretrainedConfig):
         self.tune_type_connector = tune_type_connector
         self.tune_type_vision_tower = tune_type_vision_tower
         self.tune_vision_tower_from_layer = tune_vision_tower_from_layer
+        self.s2_scales = s2_scales
 
         self.ignore_index = IGNORE_INDEX
         self.image_token_index = IMAGE_TOKEN_INDEX
@@ -73,13 +75,16 @@ class Llama3MedConfig(PretrainedConfig):
 
     def load_from_config(self, config):
         self.llm_model_name_or_path = getattr(config, "model_name_or_path", "")
+        self.pretrained_llm_path = getattr(config, "pretrained_llm_path", "")
         self.tokenizer_name_or_path = (
             getattr(config, "tokenizer_name_or_path", None)
             or self.llm_model_name_or_path
         )
         self.vision_model_name_or_path = getattr(config, "vision_tower", "")
         self.vision_model_name_or_path2 = getattr(config, "vision_tower2", "")
+        self.pretrained_vision_tower_path = getattr(config, "pretrained_vision_tower_path", "")
         self.connector_type = getattr(config, "connector_type", None)
+        self.pretrained_connector_path = getattr(config, "pretrained_connector_path", "")
         self.vision_feature_layer = getattr(config, "mm_vision_select_layer", -2)
         self.vision_feature_select_strategy = getattr(
             config, "mm_vision_select_feature", "patch"
@@ -88,6 +93,7 @@ class Llama3MedConfig(PretrainedConfig):
         self.resampler_hidden_size = getattr(config, "resampler_hidden_size", None)
         self.num_queries = getattr(config, "num_queries", None)
         self.num_resampler_layers = getattr(config, "num_resampler_layers", None)
+        self.s2_scales = getattr(config, "s2_scales", None)
 
         self.cache_dir = getattr(config, "cache_dir", None)
         self.tokenizer_use_fast = getattr(config, "tokenizer_use_fast", False)
@@ -147,7 +153,6 @@ class Llama3MedConfig(PretrainedConfig):
                 "img_size": 224,
                 "num_classes": 0,
                 "in_chans": 3,
-                "s2_scales": "224,672,1344",
             }
             self.vision_config = CONFIG_MAPPING["clip_vision_model"]()
             self.vision_config = self.vision_config.from_dict(vision_config)
@@ -167,7 +172,7 @@ class Llama3MedConfig(PretrainedConfig):
         self.vision_config.model_name_or_path2 = self.vision_model_name_or_path2.split(
             ":"
         )[-1]
-        self.s2_scales = getattr(self.vision_config, "s2_scales", None)
         self.vision_hidden_size = getattr(self.vision_config, "hidden_size", None)
         if self.s2_scales:
+            self.vision_config.s2_scales = self.s2_scales
             self.vision_hidden_size *= len(self.s2_scales.split(","))

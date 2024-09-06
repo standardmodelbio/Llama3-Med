@@ -23,6 +23,7 @@ class ModelArguments:
     connector_type: str = field(default="linear")
     pretrained_connector_path: Optional[str] = field(default=None)
 
+    s2_scales: Optional[str] = field(default="224,672,1344")
     mm_vision_select_layer: Optional[int] = field(
         default=-1
     )  # default to the last layer
