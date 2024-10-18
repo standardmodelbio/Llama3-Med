@@ -1,6 +1,4 @@
-<h2 align="center"> Repo for Llama3-Med </a><h5 align="center">
-
-Code base inherited from [TinyLLaVA](https://github.com/TinyLLaVA/TinyLLaVA_Factory/tree/main)
+<h2 align="center"> Llama3-Med </a><h5 align="center">
 
 ## Contents
 
